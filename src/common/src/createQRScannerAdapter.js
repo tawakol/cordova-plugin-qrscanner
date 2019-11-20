@@ -154,20 +154,20 @@ function doneCallback(callback, clear) {
 }
 
 return {
-  prepare: function(barcodeTypes,callback) {
-    cordova.exec(successCallback(callback), errorCallback(callback), 'QRScanner', 'prepare', [barcodeTypes]);
+  prepare: function(callback) {
+    cordova.exec(successCallback(callback), errorCallback(callback), 'QRScanner', 'prepare', []);
   },
   destroy: function(callback) {
     cordova.exec(doneCallback(callback, true), null, 'QRScanner', 'destroy', []);
   },
-  scan: function(barcodeTypes, callback) {
+  scan: function(callback) {
     if (!callback) {
       throw new Error('No callback provided to scan method.');
     }
     var success = function(result) {
       callback(null, result);
     };
-    cordova.exec(success, errorCallback(callback), 'QRScanner', 'scan', [barcodeTypes]);
+    cordova.exec(success, errorCallback(callback), 'QRScanner', 'scan', []);
   },
   cancelScan: function(callback) {
     cordova.exec(doneCallback(callback), null, 'QRScanner', 'cancelScan', []);

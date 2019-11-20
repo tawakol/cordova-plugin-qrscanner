@@ -88,7 +88,7 @@ public class QRScanner extends CordovaPlugin implements BarcodeCallback {
             else if(action.equals("scan")) {
                 cordova.getThreadPool().execute(new Runnable() {
                     public void run() {
-                        scan(callbackContext, args);
+                        scan(callbackContext);
                     }
                 });
                 return true;
@@ -189,7 +189,7 @@ public class QRScanner extends CordovaPlugin implements BarcodeCallback {
                                     currentCameraId = args.getInt(0);
                                 } catch (JSONException e) {
                                 }
-                                prepare(callbackContext, args);
+                                prepare(callbackContext);
                             }
                         });
                     }
@@ -446,7 +446,7 @@ public class QRScanner extends CordovaPlugin implements BarcodeCallback {
             return false;
         }
     }
-    private void setupCamera(CallbackContext callbackContext, barcodeType=null) {
+    private void setupCamera(CallbackContext callbackContext) {
         cordova.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -455,27 +455,13 @@ public class QRScanner extends CordovaPlugin implements BarcodeCallback {
 
                 //Configure the decoder
                 ArrayList<BarcodeFormat> formatList = new ArrayList<BarcodeFormat>();
-
-                if (barcodeType == null) { //default to qr code
-                    formatList.add(BarcodeFormat.QR_CODE);
-                } else if (barcodeType == 'UPC') {
-                    formatList.add(BarcodeFormat.UPC_A);
-                    formatList.add(BarcodeFormat.UPC_E);
-                } else if (barcodeType == 'EAN') {
-                    formatList.add(BarcodeFormat.EAN_8);
-                    formatList.add(BarcodeFormat.EAN_13);
-                } else if (barcodeType == 'QR') {
-                    formatList.add(BarcodeFormat.QR_CODE);
-                } else if (barcodeType == 'ALL'){
-                    formatList.add(BarcodeFormat.QR_CODE);
-                    formatList.add(BarcodeFormat.EAN_8);
-                    formatList.add(BarcodeFormat.EAN_13);
-                    formatList.add(BarcodeFormat.UPC_A);
-                    formatList.add(BarcodeFormat.UPC_E);
-                }
-                
-                
-                
+                // formatList.add(BarcodeFormat.CODE_128);
+                formatList.add(BarcodeFormat.CODE_39);
+                formatList.add(BarcodeFormat.QR_CODE);
+                // formatList.add(BarcodeFormat.UPC_A);
+                // formatList.add(BarcodeFormat.UPC_E);
+                // formatList.add(BarcodeFormat.EAN_8);
+                // formatList.add(BarcodeFormat.EAN_13);
                 mBarcodeView.setDecoderFactory(new DefaultDecoderFactory(formatList, null, null));
 
                 //Configure the camera (front/back)
@@ -520,8 +506,7 @@ public class QRScanner extends CordovaPlugin implements BarcodeCallback {
     }
 
     // ---- BEGIN EXTERNAL API ----
-    private void prepare(final CallbackContext callbackContext, JSONArray args) {
-        var barcodeType = args.getString(0);
+    private void prepare(final CallbackContext callbackContext) {
         if(!prepared) {
             if(currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
                 if (hasCamera()) {
@@ -529,7 +514,7 @@ public class QRScanner extends CordovaPlugin implements BarcodeCallback {
                         requestPermission(33);
                     }
                     else {
-                        setupCamera(callbackContext, barcodeType);
+                        setupCamera(callbackContext);
                         if (!scanning)
                             getStatus(callbackContext);
                     }
@@ -544,7 +529,7 @@ public class QRScanner extends CordovaPlugin implements BarcodeCallback {
                         requestPermission(33);
                     }
                     else {
-                        setupCamera(callbackContext, barcodeType);
+                        setupCamera(callbackContext);
                         if (!scanning)
                             getStatus(callbackContext);
                     }
@@ -577,22 +562,20 @@ public class QRScanner extends CordovaPlugin implements BarcodeCallback {
                 previewing = true;
                 lightOn = false;
             }
-            
-            setupCamera(callbackContext, barcodeType);
+            setupCamera(callbackContext);
             getStatus(callbackContext);
         }
     }
 
-    private void scan(final CallbackContext callbackContext, JSONArray args) {
+    private void scan(final CallbackContext callbackContext) {
         scanning = true;
-        var barcodeType = args.getString(0);
         if (!prepared) {
             shouldScanAgain = true;
             if (hasCamera()) {
                 if (!hasPermission()) {
                     requestPermission(33);
                 } else {
-                    setupCamera(callbackContext, barcodeType);
+                    setupCamera(callbackContext);
                 }
             }
         } else {
