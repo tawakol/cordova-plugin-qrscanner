@@ -24,7 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import android.hardware.Camera;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
+import android.app.Activity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -353,7 +353,7 @@ public class QRScanner extends CordovaPlugin implements BarcodeCallback {
             for (int i = 0; i < permissions.length; i++) {
                 String permission = permissions[i];
                 if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
-                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(cordova.getActivity(), permission);
+                    @SuppressLint({"NewApi", "LocalSuppress"}) boolean showRationale = cordova.getActivity().shouldShowRequestPermissionRationale(permission);
                     if (! showRationale) {
                         // user denied flagging NEVER ASK AGAIN
                         denied = true;
