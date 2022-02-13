@@ -1,6 +1,7 @@
 package com.bitpay.cordova.qrscanner;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
