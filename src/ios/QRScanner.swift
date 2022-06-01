@@ -133,15 +133,17 @@ class QRScanner : CDVPlugin, AVCaptureMetadataOutputObjectsDelegate {
             if (captureSession?.isRunning != true){
                 cameraView.backgroundColor = UIColor.clear
                 self.webView!.superview!.insertSubview(cameraView, belowSubview: self.webView!)
-                let availableVideoDevices =  AVCaptureDevice.devices(for: AVMediaType.video)
-                for device in availableVideoDevices {
-                    if device.position == AVCaptureDevice.Position.back {
-                        backCamera = device
-                    }
-                    else if device.position == AVCaptureDevice.Position.front {
-                        frontCamera = device
-                    }
-                }
+                // let availableVideoDevices =  AVCaptureDevice.devices(for: AVMediaType.video)
+                backCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .back)
+                frontCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .front)
+                // for device in availableVideoDevices {
+                //     if device.position == AVCaptureDevice.Position.back {
+                //         backCamera = device
+                //     }
+                //     else if device.position == AVCaptureDevice.Position.front {
+                //         frontCamera = device
+                //     }
+                // }
                 // older iPods have no back camera
                 if(backCamera == nil){
                     currentCamera = 1
